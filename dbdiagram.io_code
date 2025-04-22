@@ -1,0 +1,98 @@
+Table users {
+  id INT [pk, increment]
+  username VARCHAR(50) [unique, not null]
+  name VARCHAR(100) [not null]
+  email VARCHAR(100) [unique, not null]
+  password VARCHAR(255) [not null]
+  is_verified BOOLEAN [default: false]
+  status ENUM('active', 'inactive') [default: 'inactive']
+  created_at TIMESTAMP [default: `CURRENT_TIMESTAMP`]
+  updated_at TIMESTAMP [default: `CURRENT_TIMESTAMP`]
+}
+
+Table roles {
+  id INT [pk, increment]
+  role_name VARCHAR(50) [unique, not null]
+  creator_id INT [not null]
+  created_at TIMESTAMP [default: `CURRENT_TIMESTAMP`]
+  updated_at TIMESTAMP [default: `CURRENT_TIMESTAMP`]
+}
+
+Table user_roles {
+  id INT [pk, increment]
+  user_id INT [not null]
+  role_id INT [not null]
+}
+
+Table tags {
+  id INT [pk, increment]
+  tag_name VARCHAR(100) [not null]
+  slug VARCHAR(100) [unique, not null]
+  created_at TIMESTAMP [default: `CURRENT_TIMESTAMP`]
+  updated_at TIMESTAMP [default: `CURRENT_TIMESTAMP`]
+}
+
+Table user_tags {
+  id INT [pk, increment]
+  user_id INT [not null]
+  tag_id INT [not null]
+}
+
+Table notifications {
+  id INT [pk, increment]
+  user_id INT [not null]
+  title VARCHAR(255) [not null]
+  description TEXT
+  notifyable_type VARCHAR(100) [not null]
+  notifyable_id INT [not null]
+  path VARCHAR(255)
+  created_at TIMESTAMP [default: `CURRENT_TIMESTAMP`]
+}
+
+Table forums {
+  id INT [pk, increment]
+  creator_id INT [not null]
+  title VARCHAR(255) [not null]
+  description TEXT
+  status ENUM('pending', 'approved', 'rejected') [default: 'pending']
+  created_at TIMESTAMP [default: `CURRENT_TIMESTAMP`]
+  updated_at TIMESTAMP [default: `CURRENT_TIMESTAMP`]
+}
+
+Table comments {
+  id INT [pk, increment]
+  parent_id INT [ref: > comments.id, null]
+  user_id INT [not null]
+  commentable_type VARCHAR(100) [not null]
+  commentable_id INT [not null]
+  comment TEXT [not null]
+  created_at TIMESTAMP [default: `CURRENT_TIMESTAMP`]
+  updated_at TIMESTAMP [default: `CURRENT_TIMESTAMP`]
+}
+
+Table posts {
+  id INT [pk, increment]
+  creator_id INT [not null]
+  post_title VARCHAR(255) [not null]
+  descriptions TEXT
+  created_at TIMESTAMP [default: `CURRENT_TIMESTAMP`]
+  updated_at TIMESTAMP [default: `CURRENT_TIMESTAMP`]
+}
+
+Table post_tags {
+  id INT [pk, increment]
+  post_id INT [not null]
+  tag_id INT [not null]
+}
+
+Ref: roles.creator_id > users.id
+Ref: user_roles.user_id > users.id
+Ref: user_roles.role_id > roles.id
+Ref: user_tags.user_id > users.id
+Ref: user_tags.tag_id > tags.id
+Ref: notifications.user_id > users.id
+Ref: forums.creator_id > users.id
+Ref: comments.user_id > users.id
+Ref: posts.creator_id > users.id
+Ref: post_tags.post_id > posts.id
+Ref: post_tags.tag_id > tags.id
