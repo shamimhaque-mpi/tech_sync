@@ -9,6 +9,8 @@ export default class extends Migration {
            table.string('email').unique();
            table.text('password');
            table.set('status', ['active', 'inactive']).default('active');
+           table.timestamps();
+           table.softDeletes();
         });
     }
     down(schema){

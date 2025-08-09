@@ -8,7 +8,14 @@ export default class UserCreateRequest {
      */
     rules(request)
     {
-        return {};
+        return {
+            name: 'required',
+            username: 'required|unique:users,username',
+            email: 'required|email|unique:users,email',
+            password: 'required|min:6',
+            tags : 'required|array',
+            confirm_password: 'required|same:password',
+        };
     }
 
     /**

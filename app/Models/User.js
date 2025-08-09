@@ -1,5 +1,6 @@
 import Model from "devlien/model"
 import Tag from "./Tag.js";
+import Role from "./Role.js";
 
 export default class User extends Model {
 
@@ -10,13 +11,23 @@ export default class User extends Model {
     * The attributes that should be 
     * hidden for arrays and JSON output
     */
-    hidden = ['password'];
+    static hidden = ['password'];
 
-    
     /**
-     * The tags that belong to the post.
+     * Defines a many-to-many relationship between the current model and the Tag model.
+     *
+     * This method uses the `manyToMany` helper to fetch all related Tag records
+     * associated with the current model instance.
+     *
+     * @returns {Promise<Object<Tag>>} - A promise resolving to an array of Tag model instances.
+     *
      */
     async tags(){
         return await this.manyToMany(Tag);
+    }
+
+
+    async roles(){
+        return await this.manyToMany(Role);
     }
 }

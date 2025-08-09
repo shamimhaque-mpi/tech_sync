@@ -18,13 +18,33 @@ export default route.serve(route => {
     route.group({'prefix':'api', 'middleware':[Auth]}, (route)=>{
 
         route.group({ 'prefix':'user' }, (route)=>{
-            route.post('registration', 'UserController@registration');
+            route.post('create', 'UserController@create');
             route.get('list', 'UserController@list');
             route.get(':id', 'UserController@details');
         });
 
         route.group({ 'prefix':'tag' }, (route)=>{
+            route.post('create', 'TagController@create');
+            route.post('update/:id', 'TagController@update');
             route.get('list', 'TagController@list');
+        });
+
+        route.group({ 'prefix':'role' }, (route)=>{
+            route.post('create', 'RoleController@create');
+            route.post('update/:id', 'RoleController@update');
+            route.get('list', 'RoleController@list');
+        });
+
+        route.group({ 'prefix':'forum' }, (route)=>{
+            route.post('create', 'ForumController@create');
+            route.post('update/:id', 'ForumController@update');
+            route.get('list', 'ForumController@list');
+
+            route.group({ 'prefix':':id/comment' }, (route)=>{
+                route.post('create', 'ForumController@createComment');
+                route.post('update/:id', 'ForumController@updateComment');
+                route.get('list', 'ForumController@CommentList');
+            });
         });
     })
 });
