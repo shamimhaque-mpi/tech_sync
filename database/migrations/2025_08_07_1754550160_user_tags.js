@@ -9,6 +9,6 @@ export default class extends Migration {
         });
     }
     down(schema){
-        schema.drop('tags');
+        schema.drop('user_tags');
     }
 }

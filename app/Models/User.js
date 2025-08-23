@@ -1,8 +1,8 @@
-import Model from "devlien/model"
+import Authenticatable from "devlien/model/authenticatable";
 import Tag from "./Tag.js";
 import Role from "./Role.js";
 
-export default class User extends Model {
+export default class User extends Authenticatable {
 
     // The model's application namespace
     static namespace = "app/Models";
