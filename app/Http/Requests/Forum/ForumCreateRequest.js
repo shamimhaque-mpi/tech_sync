@@ -8,6 +8,8 @@ export default class ForumCreateRequest {
      */
     rules(request)
     {
+        request.add({creator_id:request.user.id});
+
         return {
             creator_id : 'required|exists:users,id',
             title : "required",

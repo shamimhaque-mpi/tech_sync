@@ -4,6 +4,8 @@ import ForumUpdateRequest from "../Requests/Forum/ForumUpdateRequest.js";
 import ForumResource from "../Resources/Forum/ForumResource.js";
 import ForumListResource from "../Resources/Forum/ForumListResource.js";
 import Forum from "../../Models/Forum.js";
+import Image from "../../Models/Image.js";
+import DateTime from "devlien/dateTime";
 
 /**
  * ForumController
@@ -39,11 +41,23 @@ export default class ForumController extends Controller {
      */
     async create(request) 
     {
+
         // STORE REQUESTED NAME
         let data = await request.only('title', 'description', 'status', 'creator_id');
-        
         // INSERT INTO THE ROLE TABLE AND REORGANIZE BY RESOURCE
-        return new ForumResource(await Forum.create(data)); 
+        const forum = await Forum.create(data);
+
+
+        for(const file of await request.files()){
+            await Image.create({
+                name : file.name(),
+                path : await file.upload('public/forum', DateTime.timestamp()),
+                imageable_type : Forum.class(),
+                imageable_id   : forum.id
+            });
+        }
+
+        return new ForumResource(forum); 
     } 
 
 

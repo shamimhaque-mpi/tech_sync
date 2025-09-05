@@ -1,5 +1,6 @@
 import ResouceCollection from "devlien/resouceCollection";
 import collect from "devlien/collect";
+import ImageResource from "../ImageResource.js";
 
 export default class ForumResource extends ResouceCollection {
 
@@ -8,6 +9,9 @@ export default class ForumResource extends ResouceCollection {
     static collection = false;
     
     async toJson(model){
-        return collect(model).only('id', 'title', 'description', 'status', 'created_at');
+        return {
+            ...collect(model).only('id', 'title', 'description', 'status', 'created_at'),
+            ...{images: await new ImageResource(await model.images())}
+        }
     }
 }

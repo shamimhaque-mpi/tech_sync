@@ -23,6 +23,9 @@ export default route.serve(route => {
             route.post('refresh-token', 'Auth/AccessController@refreshToken');
         });
 
+        route.post('registration', 'UserController@create');
+        route.get('tags', 'TagController@list');
+
         route.group({'middleware':[Auth]}, (route)=>{
 
             route.group({ 'prefix':'user' }, (route)=>{
