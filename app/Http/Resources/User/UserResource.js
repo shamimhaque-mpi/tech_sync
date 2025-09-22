@@ -14,6 +14,7 @@ export default class UserResource extends ResouceCollection {
             name: user.name,
             email: user.email,
             username: user.username,
+            bio:user.bio,
             tags: await new TagListResource(await user.tags()),
             roles: await new RoleListResource(await user.roles()),
         };

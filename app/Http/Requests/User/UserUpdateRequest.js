@@ -1,4 +1,4 @@
-export default class UserCreateRequest {
+export default class UserUpdateRequest {
 
     static namespace = "app/Http/Requests/User";
     /**
@@ -6,7 +6,7 @@ export default class UserCreateRequest {
      *
      * @return Object<string, string>
      */
-    rules(request)
+    async rules(request)
     {
         try {
             request.tags = JSON.parse(request.tags);
@@ -14,12 +14,7 @@ export default class UserCreateRequest {
         catch(e){}
 
         return {
-            name: 'required',
-            username: 'required|unique:users,username',
-            email: 'required|email|unique:users,email',
-            password: 'required|min:6',
-            tags : 'required|array',
-            confirm_password: 'required|same:password',
+            confirm_password : 'nullable|same:password'
         };
     }
 
@@ -28,7 +23,7 @@ export default class UserCreateRequest {
      *
      * @return Object<string, string>
      */
-    messages(request)
+    async messages()
     {
         return {};
     }

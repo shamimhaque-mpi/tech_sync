@@ -32,6 +32,7 @@ export default route.serve(route => {
                 route.post('create', 'UserController@create');
                 route.get('list', 'UserController@list');
                 route.get(':id', 'UserController@details');
+                route.post(':id/update', 'UserController@update');
             });
 
             route.group({ 'prefix':'tag' }, (route)=>{

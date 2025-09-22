@@ -1,5 +1,6 @@
 import Model from "devlien/model"
 import Image from "./Image.js";
+import Tag from "./Tag.js";
 
 export default class Forum extends Model {
 
@@ -19,5 +20,18 @@ export default class Forum extends Model {
      */
     images(){
         return this.morphMany(Image.class(), 'imageable');
+    }
+
+    /**
+     * Defines a many-to-many relationship between the current model and the Tag model.
+     *
+     * This method uses the `manyToMany` helper to fetch all related Tag records
+     * associated with the current model instance.
+     *
+     * @returns {Promise<Object<Tag>>} - A promise resolving to an array of Tag model instances.
+     *
+     */
+    async tags(){
+        return await this.manyToMany(Tag);
     }
 }

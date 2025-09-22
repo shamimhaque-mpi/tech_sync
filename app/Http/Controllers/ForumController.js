@@ -41,7 +41,6 @@ export default class ForumController extends Controller {
      */
     async create(request) 
     {
-
         // STORE REQUESTED NAME
         let data = await request.only('title', 'description', 'status', 'creator_id');
         // INSERT INTO THE ROLE TABLE AND REORGANIZE BY RESOURCE
@@ -57,6 +56,9 @@ export default class ForumController extends Controller {
             });
         }
 
+        if(request.tags)
+            await (await forum.tags()).sync(JSON.parse(request.tags));
+        //
         return new ForumResource(forum); 
     } 
 
@@ -73,7 +75,9 @@ export default class ForumController extends Controller {
         let data = await request.only('title', 'description', 'status', 'creator_id');
         
         // INSERT INTO THE ROLE TABLE AND REORGANIZE BY RESOURCE
-        return new ForumResource(await Forum.where({id:id}).update(data)); 
+        const forum = await Forum.where({id:id}).update(data);
+        await (await forum.tags()).sync(request.tags);
+        return new ForumResource(forum); 
     } 
 
 

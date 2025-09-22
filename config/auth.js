@@ -11,7 +11,7 @@ export default {
         api : {
             driver : 'token',
             provider : 'user',
-            expire : '1h',
+            expire : '1year',
         }
     },
 

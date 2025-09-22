@@ -3,6 +3,8 @@ import User from "../../Models/User.js";
 import UserResource from "../Resources/User/UserResource.js";
 import UserListResource from "../Resources/User/UserListResource.js";
 import UserCreateRequest from "../Requests/User/UserCreateRequest.js";
+import UserUpdateRequest from "../Requests/User/UserUpdateRequest.js";
+import Hash from "devlien/hash";
 
 /**
  * UserController
@@ -16,7 +18,8 @@ export default class UserController extends Controller {
     }
 
     static requestBind = {
-        create : UserCreateRequest
+        create : UserCreateRequest,
+        update : UserUpdateRequest,
     };
 
 
@@ -25,9 +28,16 @@ export default class UserController extends Controller {
      * @param {object} request - The HTTP request object containing query, headers, body, etc.
      * @return {string} A simple response string to confirm the controller is working.
      */
-    async create(request) {
-        let user = await User.create(await request.except(['confirm_password', 'tags']));
-        await (await user.tags()).sync(request.tags);
+    async create(request) 
+    {
+        let data = await request.except(['confirm_password', 'tags']);
+            data['password'] = await Hash.make(request.password);
+
+        //
+        let user = await User.create(data);
+        if(request.tags)
+            await (await user.tags()).sync(request.tags);
+        
         return new UserResource(user);
     }   
 
@@ -53,4 +63,23 @@ export default class UserController extends Controller {
     async details(request, {id}){
         return new UserResource(await User.where({id:id}).first());
     }
+
+
+    /**
+     * Handle GET request for the root route ("/").
+     * @param {object} request - The HTTP request object containing query, headers, body, etc.
+     * @return {string} A simple response string to confirm the controller is working.
+     */
+    async update(request, {id}) 
+    {
+        let data = await request.only('name', 'bio');
+        if(request.password) data['password'] = await Hash.make(request.password);
+
+        let user = await User.where({id:id}).update(data);
+
+        if(request.tags)
+            await (await user.tags()).sync(request.tags);
+
+        return new UserResource(user);
+    }  
 }
