@@ -54,7 +54,7 @@ export default route.serve(route => {
 
                 route.group({ 'prefix':':id/comment' }, (route)=>{
                     route.post('create', 'ForumController@createComment');
-                    route.post('update/:id', 'ForumController@updateComment');
+                    route.post(':comment_id/update', 'ForumController@updateComment');
                     route.get('list', 'ForumController@CommentList');
                 });
             });

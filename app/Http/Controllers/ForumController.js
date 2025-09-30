@@ -6,6 +6,8 @@ import ForumListResource from "../Resources/Forum/ForumListResource.js";
 import Forum from "../../Models/Forum.js";
 import Image from "../../Models/Image.js";
 import DateTime from "devlien/dateTime";
+import Comment from "../../Models/Comment.js";
+import CommentResources from "../Resources/CommentResource.js";
 
 /**
  * ForumController
@@ -80,9 +82,41 @@ export default class ForumController extends Controller {
         return new ForumResource(forum); 
     } 
 
+    async CommentList(request, { id }){
+        const forum = await Forum.where({id:id}).first();
+        if(forum)
+            return new CommentResources(await forum.comments())
+        else return {}
+    }
 
 
-    async CommentList(request){}
-    async createComment(request){}
-    async updateComment(request){}
+    async createComment(request, { id })
+    {
+        const forum = await Forum.where({id:id}).first();
+        if(forum){
+            const commentable = await Comment.create({
+                commentable_type : Forum.class(),
+                commentable_id: id,
+                parent_id : (request.parent_id ? request.parent_id : 0),
+                comment:request.comment
+            });
+
+            return true;
+        }
+        else return {}
+    }
+
+
+
+    async updateComment(request, {id, comment_id}){
+
+        request.add({id:id, comment_id:comment_id});
+        await request.validate({
+            'id' : 'required|exists:forums,id',
+            'comment_id' : `required|exists:comments,id|existsif:comments,id,commentable_type,${Forum.class()},commentable_id,${id}`,
+            'comment' : 'required'
+        });
+        
+        return true;
+    }
 }

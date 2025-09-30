@@ -1,6 +1,7 @@
 import Model from "devlien/model"
 import Image from "./Image.js";
 import Tag from "./Tag.js";
+import Comment from "./Comment.js";
 
 export default class Forum extends Model {
 
@@ -33,5 +34,11 @@ export default class Forum extends Model {
      */
     async tags(){
         return await this.manyToMany(Tag);
+    }
+
+
+
+    comments(){
+        return this.morphMany(Comment.class(), 'commentable');
     }
 }
